@@ -1,0 +1,42 @@
+{
+  "name": "3018_assignment_4_xu_wei",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "start": "ts-node src/server.ts",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rrc-w2025-wxu/3018_Assignment_4_Xu_Wei.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rrc-w2025-wxu/3018_Assignment_4_Xu_Wei/issues"
+  },
+  "homepage": "https://github.com/rrc-w2025-wxu/3018_Assignment_4_Xu_Wei#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "@types/joi": "^17.2.2",
+    "@types/node": "^25.4.0",
+    "@types/supertest": "^7.2.0",
+    "jest": "^30.3.0",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@types/morgan": "^1.9.10",
+    "express": "^5.2.1",
+    "joi": "^18.0.2",
+    "morgan": "^1.10.1"
+  }
+}
