@@ -1,5 +1,5 @@
 import express, { Express } from "express";
-import router from "./api/v1/routes/Routes";
+import router from "../src/api/v1/routes/Routes";
 
 // Initialize Express application
 const app: Express = express();
