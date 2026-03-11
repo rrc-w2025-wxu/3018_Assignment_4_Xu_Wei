@@ -5,7 +5,7 @@ import {
     consoleLogger,
 } from "./api/v1/middleware/logger";
 import errorHandler from "./api/v1/middleware/errorHandler";
-import router from "../src/api/v1/routes/Routes";
+import router from "./api/v1/routes/userRoutes";
 
 // Initialize Express application
 const app: Express = express();
