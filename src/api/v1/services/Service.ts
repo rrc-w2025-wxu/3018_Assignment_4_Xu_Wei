@@ -1,20 +1,23 @@
-import { projects } from "../../../data";
-import { Project } from "../../v1/../../interface_properties";
+import { loanApplications } from "../../../data";
+import { LoanApplication } from "../../../data";
 import admin from "firebase-admin";
 
 
-export const createProject = (name: string, status: string):Project => {
+export const createProject = (
+    applicant: string, 
+    amount:number, 
+    status: 'pending' | 'under_review' | 'flagged'
+):LoanApplication => {
     try{
-        const newId = projects.length ? projects[projects.length - 1].id + 1 : 1;
-
-        const newProject: Project = {
-        id: newId,
-        name,
-        status,
-        createdAt: new Date().toISOString(), 
+        const newId = loanApplications.length ? loanApplications[loanApplications.length - 1].id + 1 : 1;
+        const newProject: LoanApplication = {
+            id: newId,
+            applicant,
+            amount,
+            status,
+            createdAt: new Date().toISOString(), 
         };
-
-        projects.push(newProject); 
+        loanApplications.push(newProject); 
         return newProject;
     }catch (error: unknown) {
         if (error instanceof Error) {
@@ -27,7 +30,7 @@ export const createProject = (name: string, status: string):Project => {
 
 export const getAllProjects = () => {
     try{
-        const allProjects:Project[] = projects;
+        const allProjects:LoanApplication[] = loanApplications;
         return allProjects;
     }catch (error: unknown) {
         if (error instanceof Error) {
@@ -39,9 +42,9 @@ export const getAllProjects = () => {
 };
 
 
-export const getProject = (id: number): Project => {
+export const getProject = (id: number): LoanApplication => {
     try {
-        const project = projects.find(p => p.id === Number(id));
+        const project = loanApplications.find(p => p.id === Number(id));
         if (!project) throw new Error("Project not found");
         return project;
     } catch (error: unknown) {
@@ -53,13 +56,13 @@ export const getProject = (id: number): Project => {
     }
 };
 
-export const updateProject = (id: number, name?: string, status?: string): Project => {
+export const updateProject = (id: number, name?: string, status?: string): LoanApplication => {
   try {
-    const project = projects.find(p => p.id === id);
+    const project = loanApplications.find(p => p.id === id);
     if (!project) throw new Error("Project not found");
 
     if (name) project.name = name;
-    if (status) project.status = status;
+    if (status) loanApplications.status = status;
 
     return project;
   } catch (error: unknown) {
@@ -68,12 +71,12 @@ export const updateProject = (id: number, name?: string, status?: string): Proje
   }
 };
 
-export const deleteProject = (id: number): Project => {
+export const deleteProject = (id: number): LoanApplication => {
   try {
-    const index = projects.findIndex(p => p.id === id);
+    const index = loanApplications.findIndex(p => p.id === id);
     if (index === -1) throw new Error("Project not found");
 
-    const deleted = projects.splice(index, 1)[0];
+    const deleted = loanApplications.splice(index, 1)[0];
     return deleted;
   } catch (error: unknown) {
     if (error instanceof Error) throw new Error(`Failed to delete project: ${error.message}`);
