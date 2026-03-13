@@ -51,32 +51,31 @@ export const createProjectHandler = (req:Request, res:Response):void => {
         const item =  itemService.createProject(applicant, amount, status);
         res.status(HTTP_STATUS.OK).json({ message:"Loan application updated", data:item});
     }
-    
 
-}
+};
 
 export const signInHandler = async(req:Request, res: Response) => {
     try{
         const { email, password } = req.body;
         const userSignIn = Users.find(u => u.email === email && u.password === password);
 
-        if(!userSignIn || userSignIn.password !== password){
-            return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        if (!userSignIn) {
+            return res.status(401).json({
                 success: false,
-                error: {
-                    message: "Invalid email or password",
-                    code: "INVALID_CREDENTIALS"
-                },
-                timestamp: new Date().toISOString()
+                    error: {
+                        message: "Forbidden: Insufficient role",
+                        code: "INSUFFICIENT_ROLE"
+                    },
+                    timestamp: new Date().toISOString()
             });
-        };
+        }
 
         res.status(200).json({
             idToken: `mock-idToken-${userSignIn.uid}`,
             email: userSignIn.email,
-            localId: userSignIn.uid,
+            localId: `${userSignIn.role}-uid-${userSignIn.id}`,
             expiresIn: "3600",
-            refreshToken: `mock-refreshToken-${userSignIn.uid}`,
+            refreshToken: `mock-refreshToken-token`
         });
     }catch (error: unknown) {
         if (error instanceof Error) {
@@ -84,5 +83,4 @@ export const signInHandler = async(req:Request, res: Response) => {
         }
         return res.status(500).json({ message: "Failed to create project: Unknown error" });
     }
-
 };
