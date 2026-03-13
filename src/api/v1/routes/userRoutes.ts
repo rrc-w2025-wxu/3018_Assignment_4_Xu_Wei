@@ -18,15 +18,15 @@ router.get("/projects",
 router.post(
     "/projects",
     authenticate,
-    isAuthorized({ hasRole: ["admin", "lead"] }),
+    isAuthorized({ hasRole: ["admin", "manager"] }),
     Controller.createProjectHandler
 );
 
 router.put(
     "/projects/:id",
     authenticate,
-    isAuthorized({ hasRole: ["admin", "lead"] }),
-    updateProjectHandler
+    isAuthorized({ hasRole: ["admin", "manager"] }),
+    Controller.updateProjectHandler
 );
 
 
@@ -34,14 +34,20 @@ router.delete(
     "/projects/:id",
     authenticate,
     isAuthorized({ hasRole: ["manager"] }),
-    deleteProjectHandler
+    Controller.deleteProjectHandler
 );
 
 router.get(
     "/projects/:id",
     authenticate,
-    isAuthorized({ hasRole: ["admin", "lead", "developer"] }),
-    getProjectHandler
+    isAuthorized({ hasRole: ["admin", "manager", "officer"] }),
+    Controller.getProjectHandler
 );
 
+router.get(
+    "/auth/SignIn",
+    authenticate,
+    isAuthorized({ hasRole: ["admin", "manager", "officer"] }),
+    Controller.signInHandler
+);
 export default router;

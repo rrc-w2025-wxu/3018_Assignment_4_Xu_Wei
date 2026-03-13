@@ -1,11 +1,11 @@
 // External library imports
 import { Request, Response, NextFunction } from "express";
 import { DecodedIdToken } from "firebase-admin/auth";
-import { AuthenticationError } from "../errors/errors";
+import { AuthenticationError } from "../errors/Errors";
 import { getErrorMessage, getErrorCode } from "../utils/errorUtils";
 
 // Internal module imports
-import { auth } from "../../../../config/firebaseConfig";
+import { auth } from "../../../config/firebaseConfig";
 
 /**
  * Middleware to authenticate a user using a Firebase ID token.

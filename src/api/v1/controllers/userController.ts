@@ -3,7 +3,9 @@ import * as itemService from "../services/Service";
 import { HealthCheckResponse } from "../../../interface_properties";
 //import { ValidationError } from "joi";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
-import { AuthenticationError } from "../errors/Errors";
+import { auth } from "../../../config/firebaseConfig";
+import { Users } from "../../../userData";
+//import { AuthenticationError } from "../errors/Errors";
 //import { Events } from "../models/eventsModel";
 
 
@@ -41,12 +43,46 @@ export const getAllProjectsHandler = (req: Request, res: Response) => {
 
 
 export const createProjectHandler = (req:Request, res:Response):void => {
-    const applicant = req.body.applicant;
-    const amount = req.body.amount;
-    const status = req.body.status;
+    try{
+        const applicant = req.body.applicant;
+        const amount = req.body.amount;
+        const status = req.body.status;
 
-    const items =  itemService.createProject(applicant, amount, status);
-    res.status(HTTP_STATUS.OK).json({ message:""});
+        const item =  itemService.createProject(applicant, amount, status);
+        res.status(HTTP_STATUS.OK).json({ message:"Loan application updated", data:item});
+    }
+    
 
 }
 
+export const signInHandler = async(req:Request, res: Response) => {
+    try{
+        const { email, password } = req.body;
+        const userSignIn = Users.find(u => u.email === email && u.password === password);
+
+        if(!userSignIn || userSignIn.password !== password){
+            return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+                success: false,
+                error: {
+                    message: "Invalid email or password",
+                    code: "INVALID_CREDENTIALS"
+                },
+                timestamp: new Date().toISOString()
+            });
+        };
+
+        res.status(200).json({
+            idToken: `mock-idToken-${userSignIn.uid}`,
+            email: userSignIn.email,
+            localId: userSignIn.uid,
+            expiresIn: "3600",
+            refreshToken: `mock-refreshToken-${userSignIn.uid}`,
+        });
+    }catch (error: unknown) {
+        if (error instanceof Error) {
+        return res.status(500).json({ message: `Failed to create project: ${error.message}` });
+        }
+        return res.status(500).json({ message: "Failed to create project: Unknown error" });
+    }
+
+};
