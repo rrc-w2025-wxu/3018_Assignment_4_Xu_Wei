@@ -34,10 +34,15 @@ const authenticate = async (
             : undefined;
 
         if (!token) {
-            throw new AuthenticationError(
-                "Unauthorized: No token provided",
-                "TOKEN_NOT_FOUND"
-            );
+            res.status(401).json({
+                success: false,
+                error: {
+                    message: "Unauthorized: No token provided",
+                    code: "TOKEN_NOT_FOUND"
+                },
+                timestamp: new Date().toISOString()
+            });
+            return; 
         }
 
         const decodedToken: DecodedIdToken = await auth.verifyIdToken(

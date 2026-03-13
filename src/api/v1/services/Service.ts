@@ -56,13 +56,14 @@ export const getProject = (id: number): LoanApplication => {
     }
 };
 
-export const updateProject = (id: number, name?: string, status?: string): LoanApplication => {
+export const updateProject = (id: number, applicant: string, amount:number, status: 'pending' | 'under_review' | 'flagged'): LoanApplication => {
   try {
     const project = loanApplications.find(p => p.id === id);
     if (!project) throw new Error("Project not found");
 
-    if (name) project.name = name;
-    if (status) loanApplications.status = status;
+    if (applicant) project.applicant = applicant;
+    if (amount) project.amount = amount;
+    if (status) project.status = status;
 
     return project;
   } catch (error: unknown) {

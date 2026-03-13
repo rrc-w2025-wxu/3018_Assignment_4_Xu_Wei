@@ -29,12 +29,7 @@ export const setCustomClaims = async (
         // Set custom claims on the user's Firebase account
         await auth.setCustomUserClaims(uid, claims);
 
-        res.status(HTTP_STATUS.OK).json(
-            successResponse(
-                {},
-                `Custom claims set for user: ${uid}. User must obtain a new token for changes to take effect.`
-            )
-        );
+        res.status(HTTP_STATUS.OK).send("Ok");
     } catch (error) {
         next(error);
     }

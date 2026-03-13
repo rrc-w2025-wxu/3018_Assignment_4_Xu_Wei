@@ -12,14 +12,14 @@ router.get("/health", itemsHealthCheck);
 router.get("/projects", 
     authenticate, 
     isAuthorized({ hasRole: ["admin", "manager", "officer"] }), 
-    Controller.getAllProjects
+    Controller.getAllProjectsHandler
 );
 
 router.post(
     "/projects",
     authenticate,
     isAuthorized({ hasRole: ["admin", "lead"] }),
-    createProjectHandler
+    Controller.createProjectHandler
 );
 
 router.put(
