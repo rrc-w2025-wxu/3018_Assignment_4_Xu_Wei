@@ -40,9 +40,7 @@ export const getAllProjectsHandler = (req: Request, res: Response) => {
   }
 };
     
-
-
-export const createProjectHandler = (req:Request, res:Response):void => {
+export const createProjectHandler = (req:Request, res:Response) => {
     try{
         const applicant = req.body.applicant;
         const amount = req.body.amount;
@@ -50,6 +48,28 @@ export const createProjectHandler = (req:Request, res:Response):void => {
 
         const item =  itemService.createProject(applicant, amount, status);
         res.status(HTTP_STATUS.OK).json({ message:"Loan application updated", data:item});
+    }catch (error: unknown) {
+        if (error instanceof Error) {
+            return res.status(500).json({ message: `Failed to create project: ${error.message}` });
+        }
+        return res.status(500).json({ message: "Failed to create project: Unknown error" });
+    }
+
+};
+
+export const updateProjectHandler = (req:Request, res:Response) => {
+    try{
+        const applicant = req.body.applicant;
+        const amount = req.body.amount;
+        const status = req.body.status;
+
+        const item =  itemService.createProject(applicant, amount, status);
+        res.status(HTTP_STATUS.OK).json({ message:"Loan application updated", data:item});
+    }catch (error: unknown) {
+        if (error instanceof Error) {
+            return res.status(500).json({ message: `Failed to create project: ${error.message}` });
+        }
+        return res.status(500).json({ message: "Failed to create project: Unknown error" });
     }
 
 };
