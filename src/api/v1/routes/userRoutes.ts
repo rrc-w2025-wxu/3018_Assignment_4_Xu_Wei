@@ -11,21 +11,21 @@ router.get("/health", itemsHealthCheck);
 
 router.get("/projects", 
     authenticate, 
-    isAuthorized({ hasRole: ["admin", "manager", "officer"] }), 
+    isAuthorized({ hasRole: ["officer"] }), 
     Controller.getAllProjectsHandler
 );
 
 router.post(
     "/projects",
     authenticate,
-    isAuthorized({ hasRole: ["admin", "manager"] }),
+    isAuthorized({ hasRole: ["manager"] }),
     Controller.createProjectHandler
 );
 
 router.put(
     "/projects/:id",
     authenticate,
-    isAuthorized({ hasRole: ["admin", "manager"] }),
+    isAuthorized({ hasRole: ["manager"] }),
     Controller.updateProjectHandler
 );
 
@@ -33,7 +33,7 @@ router.put(
 router.delete(
     "/projects/:id",
     authenticate,
-    isAuthorized({ hasRole: ["manager"] }),
+    isAuthorized({ hasRole: ["admin"] }),
     Controller.deleteProjectHandler
 );
 

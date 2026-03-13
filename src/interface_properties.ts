@@ -6,4 +6,9 @@ export interface HealthCheckResponse {
     uptime: number;
     timestamp: string;
     version: string;
-}
+};
+
+export type LoanStatus =
+  | "pending"
+  | "under_review"
+  | "flagged";

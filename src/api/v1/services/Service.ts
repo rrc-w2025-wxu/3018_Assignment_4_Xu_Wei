@@ -1,6 +1,7 @@
 import { loanApplications } from "../../../data";
 import { LoanApplication } from "../../../data";
 import admin from "firebase-admin";
+import { LoanStatus } from "src/interface_properties";
 
 
 export const createProject = (
@@ -56,7 +57,7 @@ export const getProject = (id: number): LoanApplication => {
     }
 };
 
-export const updateProject = (id: number, applicant: string, amount:number, status: 'pending' | 'under_review' | 'flagged'): LoanApplication => {
+export const updateProject = (id: number, applicant: string, amount:number, status: LoanStatus): LoanApplication => {
   try {
     const project = loanApplications.find(p => p.id === id);
     if (!project) throw new Error("Project not found");
