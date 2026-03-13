@@ -9,21 +9,21 @@ const router = express.Router();
 // Health check endpoint
 router.get("/health", itemsHealthCheck);
 
-router.get("/projects", 
+router.get("/loans", 
     authenticate, 
     isAuthorized({ hasRole: ["officer"] }), 
     Controller.getAllLoansHandler
 );
 
 router.post(
-    "/projects",
+    "/loans",
     authenticate,
     isAuthorized({ hasRole: ["manager"] }),
     Controller.createLoanHandler
 );
 
 router.put(
-    "/projects/:id",
+    "/loans/:id",
     authenticate,
     isAuthorized({ hasRole: ["manager"] }),
     Controller.updateLoanHandler
@@ -31,14 +31,14 @@ router.put(
 
 
 router.delete(
-    "/projects/:id",
+    "/loans/:id",
     authenticate,
     isAuthorized({ hasRole: ["admin"] }),
     Controller.deleteLoanHandler
 );
 
 router.get(
-    "/projects/:id",
+    "/loans/:id",
     authenticate,
     isAuthorized({ hasRole: ["admin", "manager", "officer"] }),
     Controller.getLoanHandler

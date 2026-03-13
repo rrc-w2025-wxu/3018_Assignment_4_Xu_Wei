@@ -1,13 +1,9 @@
 import { Request, Response } from "express";
 import * as itemService from "../services/Service";
 import { HealthCheckResponse } from "../../../interface_properties";
-//import { ValidationError } from "joi";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
-import { auth } from "../../../config/firebaseConfig";
 import { Users } from "../../../userData";
 import { LoanStatus } from "../../../interface_properties";
-//import { AuthenticationError } from "../errors/Errors";
-//import { Events } from "../models/eventsModel";
 
 
 /**

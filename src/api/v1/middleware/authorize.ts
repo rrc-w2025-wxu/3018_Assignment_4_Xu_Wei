@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 // Internal module imports
 import { AuthorizationOptions } from "../models/authorizationOptions";
 import { MiddlewareFunction } from "../types/expressTypes";
-import { AuthorizationError } from "../errors/errors";
+import { AuthorizationError } from "../errors/Errors";
 
 /**
  * Middleware to check if a user is authorized based on their role or UID.
