@@ -4,7 +4,7 @@ import admin from "firebase-admin";
 import { LoanStatus } from "src/interface_properties";
 
 
-export const createProject = (
+export const createLoan = (
     applicant: string, 
     amount:number, 
     status: 'pending' | 'under_review' | 'flagged'
@@ -29,7 +29,7 @@ export const createProject = (
     }
 };
 
-export const getAllProjects = () => {
+export const getAllLoans = () => {
     try{
         const allProjects:LoanApplication[] = loanApplications;
         return allProjects;
@@ -43,7 +43,7 @@ export const getAllProjects = () => {
 };
 
 
-export const getProject = (id: number): LoanApplication => {
+export const getLoan = (id: number): LoanApplication => {
     try {
         const project = loanApplications.find(p => p.id === Number(id));
         if (!project) throw new Error("Project not found");
@@ -57,7 +57,7 @@ export const getProject = (id: number): LoanApplication => {
     }
 };
 
-export const updateProject = (id: number, applicant: string, amount:number, status: LoanStatus): LoanApplication => {
+export const updateLoan = (id: number, applicant: string, amount:number, status: LoanStatus): LoanApplication => {
   try {
     const project = loanApplications.find(p => p.id === id);
     if (!project) throw new Error("Project not found");
@@ -73,7 +73,7 @@ export const updateProject = (id: number, applicant: string, amount:number, stat
   }
 };
 
-export const deleteProject = (id: number): LoanApplication => {
+export const deleteLoan = (id: number): LoanApplication => {
   try {
     const index = loanApplications.findIndex(p => p.id === id);
     if (index === -1) throw new Error("Project not found");

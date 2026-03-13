@@ -28,9 +28,9 @@ export const itemsHealthCheck = (req: Request, res: Response): void => {
     res.status(HTTP_STATUS.OK).json(healthCheck);
 }
 
-export const getAllProjectsHandler = (req: Request, res: Response) => {
+export const getAllLoansHandler = (req: Request, res: Response) => {
     try{
-        const items = itemService.getAllProjects();
+        const items = itemService.getAllLoans();
         const count: number = items.length;
         res.status(HTTP_STATUS.OK).json({ message: "Loan applications retrieved", count, data: items });
     }catch (error: unknown) {
@@ -41,13 +41,13 @@ export const getAllProjectsHandler = (req: Request, res: Response) => {
   }
 };
     
-export const createProjectHandler = (req:Request, res:Response) => {
+export const createLoanHandler = (req:Request, res:Response) => {
     try{
         const applicant = req.body.applicant;
         const amount = req.body.amount;
         const status = req.body.status;
 
-        const item =  itemService.createProject(applicant, amount, status);
+        const item =  itemService.createLoan(applicant, amount, status);
         res.status(HTTP_STATUS.OK).json({ message:"Loan application updated", data:item});
     }catch (error: unknown) {
         if (error instanceof Error) {
@@ -58,7 +58,7 @@ export const createProjectHandler = (req:Request, res:Response) => {
 
 };
 
-export const updateProjectHandler = (req:Request, res:Response) => {
+export const updateLoanHandler = (req:Request, res:Response) => {
     try{
         const id = Number(req.params.id);
         const { applicant, amount, status } = req.body as{
@@ -67,7 +67,7 @@ export const updateProjectHandler = (req:Request, res:Response) => {
             status: LoanStatus;
         };
 
-        const item =  itemService.updateProject(id, applicant, amount, status);
+        const item =  itemService.updateLoan(id, applicant, amount, status);
         res.status(HTTP_STATUS.OK).json({ message:"Loan application updated", data:item});
     }catch (error: unknown) {
         if (error instanceof Error) {
@@ -77,11 +77,11 @@ export const updateProjectHandler = (req:Request, res:Response) => {
     }
 };
 
-export const deleteProjectHandler = (req: Request, res: Response) => {
+export const deleteLoanHandler = (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
 
-    const deletedProject = itemService.deleteProject(id);
+    const deletedProject = itemService.deleteLoan(id);
 
     return res.status(200).json({
       message: "Project deleted successfully",
@@ -101,7 +101,7 @@ export const deleteProjectHandler = (req: Request, res: Response) => {
 export const getLoanHandler = (req: Request, res: Response) => {
     try{
         const id = Number(req.params.id);
-        const items = itemService.getProject(id);
+        const items = itemService.getLoan(id);
         res.status(HTTP_STATUS.OK).json({ message: "Loan applications retrieved", data: items });
     }catch (error: unknown) {
     if (error instanceof Error) {
