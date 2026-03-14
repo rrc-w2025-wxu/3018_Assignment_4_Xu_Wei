@@ -79,12 +79,6 @@ export const deleteLoanHandler = (req: Request, res: Response, next: NextFunctio
   try {
     const id = Number(req.params.id);
 
-    if (!id) {
-        const err = new Error("Loan not found");
-        (err as any).status = 404;
-        throw err;
-    }
-
     itemService.deleteLoan(id);
 
     return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -96,11 +90,14 @@ export const deleteLoanHandler = (req: Request, res: Response, next: NextFunctio
         timestamp: new Date().toISOString()
     });
   }catch (error: unknown) {
-        if (error instanceof Error) {
-            next(error); 
-        } else {
-            next(new Error("Unknown error"));
-        }
+        return res.status(HTTP_STATUS.NOT_FOUND).json({
+            success: false,
+            error: {
+                message: "Loan application not found",
+                code: "LOAN_NOT_FOUND"
+            },
+            timestamp: new Date().toISOString()
+        });
     }
 };
 
@@ -110,11 +107,14 @@ export const getLoanHandler = (req: Request, res: Response, next: NextFunction) 
         const items = itemService.getLoan(id);
         res.status(HTTP_STATUS.OK).json({ message: "Loan applications retrieved", data: items });
     }catch (error: unknown) {
-        if (error instanceof Error) {
-            next(error); 
-        } else {
-            next(new Error("Unknown error"));
-        }
+        return res.status(HTTP_STATUS.NOT_FOUND).json({
+        success: false,
+        error: {
+            message: "Loan application not found",
+            code: "LOAN_NOT_FOUND"
+        },
+        timestamp: new Date().toISOString()
+        });
     }
 };
 
