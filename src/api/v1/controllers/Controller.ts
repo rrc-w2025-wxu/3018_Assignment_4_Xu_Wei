@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import * as itemService from "../services/Service";
 import { HealthCheckResponse } from "../../../interface_properties";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
@@ -24,20 +24,21 @@ export const itemsHealthCheck = (req: Request, res: Response): void => {
     res.status(HTTP_STATUS.OK).json(healthCheck);
 }
 
-export const getAllLoansHandler = (req: Request, res: Response) => {
+export const getAllLoansHandler = (req: Request, res: Response, next: NextFunction) => {
     try{
         const items = itemService.getAllLoans();
         const count: number = items.length;
         res.status(HTTP_STATUS.OK).json({ message: "Loan applications retrieved", count, data: items });
     }catch (error: unknown) {
-    if (error instanceof Error) {
-      return res.status(500).json({ message: `Failed to get all loans: ${error.message}` });
+        if (error instanceof Error) {
+            next(error); 
+        } else {
+            next(new Error("Unknown error"));
+        }
     }
-    return res.status(500).json({ message: "Failed to get all loans: Unknown error" });
-  }
 };
     
-export const createLoanHandler = (req:Request, res:Response) => {
+export const createLoanHandler = (req:Request, res:Response, next: NextFunction) => {
     try{
         const applicant = req.body.applicant;
         const amount = req.body.amount;
@@ -47,14 +48,14 @@ export const createLoanHandler = (req:Request, res:Response) => {
         res.status(HTTP_STATUS.OK).json({ message:"Loan application updated", data:item});
     }catch (error: unknown) {
         if (error instanceof Error) {
-            return res.status(500).json({ message: `Failed to create project: ${error.message}` });
+            next(error); 
+        } else {
+            next(new Error("Unknown error"));
         }
-        return res.status(500).json({ message: "Failed to create project: Unknown error" });
     }
-
 };
 
-export const updateLoanHandler = (req:Request, res:Response) => {
+export const updateLoanHandler = (req:Request, res:Response, next: NextFunction) => {
     try{
         const id = Number(req.params.id);
         const { applicant, amount, status } = req.body as{
@@ -67,19 +68,26 @@ export const updateLoanHandler = (req:Request, res:Response) => {
         res.status(HTTP_STATUS.OK).json({ message:"Loan application updated", data:item});
     }catch (error: unknown) {
         if (error instanceof Error) {
-            return res.status(500).json({ message: `Failed to update loan: ${error.message}` });
+            next(error); 
+        } else {
+            next(new Error("Unknown error"));
         }
-        return res.status(500).json({ message: "Failed to update loan: Unknown error" });
     }
 };
 
-export const deleteLoanHandler = (req: Request, res: Response) => {
+export const deleteLoanHandler = (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = Number(req.params.id);
 
+    if (!id) {
+        const err = new Error("Loan not found");
+        (err as any).status = 404;
+        throw err;
+    }
+
     itemService.deleteLoan(id);
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
         error: {
             message: "Loan application not found",
@@ -87,38 +95,30 @@ export const deleteLoanHandler = (req: Request, res: Response) => {
         },
         timestamp: new Date().toISOString()
     });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      if (error.message === "Project not found") {
-        return res.status(404).json({ message: error.message });
-      }
-      return res.status(500).json({ message: error.message });
+  }catch (error: unknown) {
+        if (error instanceof Error) {
+            next(error); 
+        } else {
+            next(new Error("Unknown error"));
+        }
     }
-    return res.status(500).json({ message: "Unknown error" });
-  }
 };
 
-export const getLoanHandler = (req: Request, res: Response) => {
+export const getLoanHandler = (req: Request, res: Response, next: NextFunction) => {
     try{
         const id = Number(req.params.id);
         const items = itemService.getLoan(id);
         res.status(HTTP_STATUS.OK).json({ message: "Loan applications retrieved", data: items });
     }catch (error: unknown) {
-    if (error instanceof Error) {
-      return res.status(500).json({ 
-        success: false,
-        error: {
-            message: "Loan application not found",
-            code: "LOAN_NOT_FOUND"
-        },
-        timestamp: new Date().toISOString()
-       });
+        if (error instanceof Error) {
+            next(error); 
+        } else {
+            next(new Error("Unknown error"));
+        }
     }
-    return res.status(500).json({ message: "Failed to get loan: Unknown error" });
-  }
 };
 
-export const signInHandler = async(req:Request, res: Response) => {
+export const signInHandler = async(req:Request, res: Response, next: NextFunction) => {
     try{
         const { email, password } = req.body;
         const userSignIn = Users.find(u => u.email === email && u.password === password);
@@ -143,8 +143,9 @@ export const signInHandler = async(req:Request, res: Response) => {
         });
     }catch (error: unknown) {
         if (error instanceof Error) {
-        return res.status(500).json({ message: `Failed to sign in: ${error.message}` });
+            next(error); 
+        } else {
+            next(new Error("Unknown error"));
         }
-        return res.status(500).json({ message: "Failed to sign in: Unknown error" });
     }
 };
