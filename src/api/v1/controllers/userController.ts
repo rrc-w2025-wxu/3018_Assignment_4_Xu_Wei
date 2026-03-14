@@ -116,8 +116,8 @@ export const signInHandler = async(req:Request, res: Response) => {
             return res.status(401).json({
                 success: false,
                     error: {
-                        message: "Forbidden: Insufficient role",
-                        code: "INSUFFICIENT_ROLE"
+                        message: "Invalid email or password",
+                        code: "INVALID_CREDENTIALS"
                     },
                     timestamp: new Date().toISOString()
             });
@@ -128,12 +128,12 @@ export const signInHandler = async(req:Request, res: Response) => {
             email: userSignIn.email,
             localId: `${userSignIn.role}-uid-${userSignIn.id}`,
             expiresIn: "3600",
-            refreshToken: `mock-refreshToken-token`
+            refreshToken: `mock-refresh-token`
         });
     }catch (error: unknown) {
         if (error instanceof Error) {
-        return res.status(500).json({ message: `Failed to create project: ${error.message}` });
+        return res.status(500).json({ message: `Failed to sign in: ${error.message}` });
         }
-        return res.status(500).json({ message: "Failed to create project: Unknown error" });
+        return res.status(500).json({ message: "Failed to sign in: Unknown error" });
     }
 };

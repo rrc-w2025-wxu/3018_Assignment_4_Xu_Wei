@@ -1,11 +1,8 @@
 // External library imports
 import { Request, Response, NextFunction } from "express";
-import { DecodedIdToken } from "firebase-admin/auth";
 import { AuthenticationError } from "../errors/Errors";
 import { getErrorMessage, getErrorCode } from "../utils/errorUtils";
 
-// Internal module imports
-import { auth } from "../../../config/firebaseConfig";
 
 /**
  * Middleware to authenticate a user using a Firebase ID token.
@@ -22,6 +19,23 @@ import { auth } from "../../../config/firebaseConfig";
  * @param {NextFunction} next - The next middleware function.
  * @returns {Promise<void>}
  */
+
+const mockTokens: Record<string, { uid: string; role: string }> = {
+    "mock-idToken-abc123": {
+        uid: "officer-uid-001",
+        role: "officer"
+    },
+    "mock-idToken-def456": {
+        uid: "client-uid-002",
+        role: "client"
+    },
+    "mock-idToken-ghi789": {
+        uid: "admin-uid-003",
+        role: "admin"
+    }
+};
+
+
 const authenticate = async (
     req: Request,
     res: Response,
@@ -45,11 +59,22 @@ const authenticate = async (
             return; 
         }
 
-        const decodedToken: DecodedIdToken = await auth.verifyIdToken(
-            token
-        );
-        res.locals.uid = decodedToken.uid;
-        res.locals.role = decodedToken.role;
+        const user = mockTokens[token];
+
+        if (!user) {
+            res.status(401).json({
+                success: false,
+                error: {
+                    message: "Unauthorized: Invalid token",
+                    code: "TOKEN_INVALID"
+                },
+                timestamp: new Date().toISOString()
+            });
+            return;
+        }
+
+        res.locals.uid = user.uid;
+        res.locals.role = user.role;
         next();
     } catch (error: unknown) {
         if (error instanceof AuthenticationError) {

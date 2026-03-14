@@ -3,14 +3,14 @@ export const Users = [
         id: "001",
         uid: "abc123",
         email: "officer@pixell-river.com",
-        password: "password789",
+        password: "password123",
         role: "officer"
     },
     {
         id: "002",
         uid: "def456",
         email: "manager@pixell-river.com",
-        password: "password456",
+        password: "password123",
         role: "manager"
     },
     {

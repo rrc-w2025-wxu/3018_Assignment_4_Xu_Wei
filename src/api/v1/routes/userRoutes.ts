@@ -44,10 +44,7 @@ router.get(
     Controller.getLoanHandler
 );
 
-router.get(
-    "/auth/SignIn",
-    authenticate,
-    isAuthorized({ hasRole: ["admin", "manager", "officer"] }),
-    Controller.signInHandler
+router.post(
+    "/auth/signin", Controller.signInHandler
 );
 export default router;
