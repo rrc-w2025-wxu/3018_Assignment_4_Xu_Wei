@@ -31,9 +31,9 @@ export const getAllLoansHandler = (req: Request, res: Response) => {
         res.status(HTTP_STATUS.OK).json({ message: "Loan applications retrieved", count, data: items });
     }catch (error: unknown) {
     if (error instanceof Error) {
-      return res.status(500).json({ message: `Failed to create project: ${error.message}` });
+      return res.status(500).json({ message: `Failed to get all loans: ${error.message}` });
     }
-    return res.status(500).json({ message: "Failed to create project: Unknown error" });
+    return res.status(500).json({ message: "Failed to get all loans: Unknown error" });
   }
 };
     
@@ -67,9 +67,9 @@ export const updateLoanHandler = (req:Request, res:Response) => {
         res.status(HTTP_STATUS.OK).json({ message:"Loan application updated", data:item});
     }catch (error: unknown) {
         if (error instanceof Error) {
-            return res.status(500).json({ message: `Failed to create project: ${error.message}` });
+            return res.status(500).json({ message: `Failed to update loan: ${error.message}` });
         }
-        return res.status(500).json({ message: "Failed to create project: Unknown error" });
+        return res.status(500).json({ message: "Failed to update loan: Unknown error" });
     }
 };
 
@@ -77,11 +77,15 @@ export const deleteLoanHandler = (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
 
-    const deletedProject = itemService.deleteLoan(id);
+    itemService.deleteLoan(id);
 
     return res.status(200).json({
-      message: "Project deleted successfully",
-      project: deletedProject,
+        success: false,
+        error: {
+            message: "Loan application not found",
+            code: "LOAN_NOT_FOUND"
+        },
+        timestamp: new Date().toISOString()
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -101,9 +105,9 @@ export const getLoanHandler = (req: Request, res: Response) => {
         res.status(HTTP_STATUS.OK).json({ message: "Loan applications retrieved", data: items });
     }catch (error: unknown) {
     if (error instanceof Error) {
-      return res.status(500).json({ message: `Failed to create project: ${error.message}` });
+      return res.status(500).json({ message: `Failed to get loan: ${error.message}` });
     }
-    return res.status(500).json({ message: "Failed to create project: Unknown error" });
+    return res.status(500).json({ message: "Failed to get loan: Unknown error" });
   }
 };
 
