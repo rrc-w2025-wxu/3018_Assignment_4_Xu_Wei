@@ -24,6 +24,15 @@ export const itemsHealthCheck = (req: Request, res: Response): void => {
     res.status(HTTP_STATUS.OK).json(healthCheck);
 }
 
+/**
+ * GET /api/v1/loans
+ * Retrieve all loan applications.
+ * 
+ * @param req - Express Request
+ * @param res - Express Response
+ * @param next - Express NextFunction for error handling
+ * @returns JSON containing all loans and count
+ */
 export const getAllLoansHandler = (req: Request, res: Response, next: NextFunction) => {
     try{
         const items = itemService.getAllLoans();
@@ -37,7 +46,18 @@ export const getAllLoansHandler = (req: Request, res: Response, next: NextFuncti
         }
     }
 };
-    
+
+/**
+ * POST /api/v1/loans
+ * Create a new loan application.
+ * 
+ * @param req.body.applicant - Applicant name
+ * @param req.body.amount - Loan amount
+ * @param req.body.status - Loan status (LoanStatus type)
+ * @param res - Express Response
+ * @param next - Express NextFunction for error handling
+ * @returns JSON containing the newly created loan
+ */
 export const createLoanHandler = (req:Request, res:Response, next: NextFunction) => {
     try{
         const applicant = req.body.applicant;
@@ -55,6 +75,18 @@ export const createLoanHandler = (req:Request, res:Response, next: NextFunction)
     }
 };
 
+/**
+ * PUT /api/v1/loans/:id
+ * Update an existing loan application.
+ * 
+ * @param req.params.id - Loan ID to update
+ * @param req.body.applicant - Updated applicant name
+ * @param req.body.amount - Updated loan amount
+ * @param req.body.status - Updated loan status
+ * @param res - Express Response
+ * @param next - Express NextFunction for error handling
+ * @returns JSON containing the updated loan
+ */
 export const updateLoanHandler = (req:Request, res:Response, next: NextFunction) => {
     try{
         const id = Number(req.params.id);
@@ -75,6 +107,15 @@ export const updateLoanHandler = (req:Request, res:Response, next: NextFunction)
     }
 };
 
+/**
+ * DELETE /api/v1/loans/:id
+ * Delete a loan application.
+ * 
+ * @param req.params.id - Loan ID to delete
+ * @param res - Express Response
+ * @param next - Express NextFunction for error handling
+ * @returns JSON with success false if not found, or success true if deleted
+ */
 export const deleteLoanHandler = (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = Number(req.params.id);
@@ -101,6 +142,15 @@ export const deleteLoanHandler = (req: Request, res: Response, next: NextFunctio
     }
 };
 
+/**
+ * GET /api/v1/loans/:id
+ * Retrieve a single loan by ID.
+ * 
+ * @param req.params.id - Loan ID
+ * @param res - Express Response
+ * @param next - Express NextFunction for error handling
+ * @returns JSON containing the loan data or 404 if not found
+ */
 export const getLoanHandler = (req: Request, res: Response, next: NextFunction) => {
     try{
         const id = Number(req.params.id);
@@ -118,6 +168,16 @@ export const getLoanHandler = (req: Request, res: Response, next: NextFunction) 
     }
 };
 
+/**
+ * POST /api/v1/auth/signin
+ * User sign-in endpoint.
+ * 
+ * @param req.body.email - User email
+ * @param req.body.password - User password
+ * @param res - Express Response
+ * @param next - Express NextFunction for error handling
+ * @returns JSON with mock idToken if credentials match, else 401
+ */
 export const signInHandler = async(req:Request, res: Response, next: NextFunction) => {
     try{
         const { email, password } = req.body;

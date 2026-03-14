@@ -1,4 +1,3 @@
-// data.ts
 
 export interface LoanApplication {
   id: number;
@@ -8,6 +7,7 @@ export interface LoanApplication {
   createdAt: string; 
 }
 
+// Define the structure of a loan application
 export const loanApplications: LoanApplication[] = [
   {
     id: 1,

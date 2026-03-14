@@ -1,3 +1,5 @@
+// Sample in-memory user data
+// This represents mock users for authentication and authorization testing
 export const Users = [
     {
         id: "001",
