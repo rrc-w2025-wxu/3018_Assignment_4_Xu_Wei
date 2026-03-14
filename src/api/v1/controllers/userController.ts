@@ -105,7 +105,14 @@ export const getLoanHandler = (req: Request, res: Response) => {
         res.status(HTTP_STATUS.OK).json({ message: "Loan applications retrieved", data: items });
     }catch (error: unknown) {
     if (error instanceof Error) {
-      return res.status(500).json({ message: `Failed to get loan: ${error.message}` });
+      return res.status(500).json({ 
+        success: false,
+        error: {
+            message: "Loan application not found",
+            code: "LOAN_NOT_FOUND"
+        },
+        timestamp: new Date().toISOString()
+       });
     }
     return res.status(500).json({ message: "Failed to get loan: Unknown error" });
   }
