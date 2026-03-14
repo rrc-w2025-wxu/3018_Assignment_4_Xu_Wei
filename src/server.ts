@@ -1,10 +1,14 @@
 import express from "express";
-import Routes from "./api/v1/routes/userRoutes";
+import morgan from "morgan";
+import Routes from "./api/v1/routes/Routes";
 
 /**
  * Initialize an Express application
  */
 const app = express();
+
+// morgan middleware
+app.use(morgan("dev"));
 
 /**
  * Middleware to parse incoming JSON requests

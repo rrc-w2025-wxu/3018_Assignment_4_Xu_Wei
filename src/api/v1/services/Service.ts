@@ -1,6 +1,5 @@
 import { loanApplications } from "../../../data";
 import { LoanApplication } from "../../../data";
-import admin from "firebase-admin";
 import { LoanStatus } from "src/interface_properties";
 
 
@@ -83,16 +82,5 @@ export const deleteLoan = (id: number): LoanApplication => {
   } catch (error: unknown) {
     if (error instanceof Error) throw new Error(`Failed to delete project: ${error.message}`);
     throw new Error("Failed to delete project: Unknown error");
-  }
-};
-
-export const setCustomClaimsService = async (email: string, role: string): Promise<void> => {
-  try {
-    if (!email || !role) throw new Error("Missing email or role");
-
-    await admin.auth().setCustomUserClaims(email, { role });
-  } catch (error: unknown) {
-    if (error instanceof Error) throw new Error(`Failed to set custom claims: ${error.message}`);
-    throw new Error("Failed to set custom claims: Unknown error");
   }
 };

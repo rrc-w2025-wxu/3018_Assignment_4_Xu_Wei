@@ -1,6 +1,6 @@
 import express from "express";
-import * as Controller from "../controllers/userController";
-import { itemsHealthCheck } from "../controllers/userController";
+import * as Controller from "../controllers/Controller";
+import { itemsHealthCheck } from "../controllers/Controller";
 import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
 
