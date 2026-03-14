@@ -31,27 +31,26 @@ const isAuthorized = (opts: AuthorizationOptions): MiddlewareFunction => {
 
             // If no role exists on the user, throw Forbidden response
             if (!role) {
-                res.status(403).json({
+                throw new AuthorizationError(
+                    "Forbidden: No role found",
+                    "ROLE_NOT_FOUND"
+                );
+            }
+
+            // Check if the user's role matches one of the allowed roles
+            if (opts.hasRole && opts.hasRole.includes(role)) {
+                return next();
+            }
+
+            // If the role is not authorized, throw Forbidden response
+            return res.status(403).json({
                     success: false,
                     error: {
                         message: "Forbidden: Insufficient role",
                         code: "INSUFFICIENT_ROLE"
                     },
                     timestamp: new Date().toISOString()
-                });
-                return;
-            }
-
-            // Check if the user's role matches one of the allowed roles
-            if (opts.hasRole.includes(role)) {
-                return next();
-            }
-
-            // If the role is not authorized, throw Forbidden response
-            throw new AuthorizationError(
-                "Forbidden: Insufficient role",
-                "INSUFFICIENT_ROLE"
-            );
+            });
         } catch (error) {
             // Pass errors to the centralized error handler
             next(error);

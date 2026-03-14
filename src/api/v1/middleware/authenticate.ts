@@ -27,7 +27,7 @@ const mockTokens: Record<string, { uid: string; role: string }> = {
     },
     "mock-idToken-def456": {
         uid: "client-uid-002",
-        role: "client"
+        role: "manager"
     },
     "mock-idToken-ghi789": {
         uid: "admin-uid-003",

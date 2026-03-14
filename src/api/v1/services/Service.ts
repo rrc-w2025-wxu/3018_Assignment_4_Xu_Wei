@@ -7,7 +7,7 @@ import { LoanStatus } from "src/interface_properties";
 export const createLoan = (
     applicant: string, 
     amount:number, 
-    status: 'pending' | 'under_review' | 'flagged'
+    status: 'pending' | 'under_review' | 'flagged' = 'pending'
 ):LoanApplication => {
     try{
         const newId = loanApplications.length ? loanApplications[loanApplications.length - 1].id + 1 : 1;
