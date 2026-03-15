@@ -1,2 +1,5 @@
 node_modules/
 dist/
+logs/
+*.log
+assignment-4-e2035-firebase-adminsdk-fbsvc-5ddb334be0.json
