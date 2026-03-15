@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthenticationError } from "../errors/Errors";
 import { getErrorMessage, getErrorCode } from "../utils/errorUtils";
-
+import { HTTP_STATUS } from "../../../constants/httpConstants";
 
 /**
  * Middleware to authenticate a user using a Firebase ID token.
@@ -35,7 +35,6 @@ const mockTokens: Record<string, { uid: string; role: string }> = {
     }
 };
 
-
 const authenticate = async (
     req: Request,
     res: Response,
@@ -47,22 +46,52 @@ const authenticate = async (
             ? authHeader.split(" ")[1]
             : undefined;
 
+        // invalid token
         if (!token) {
-            res.status(401).json({
-                success: false,
-                error: {
-                    message: "Unauthorized: No token provided",
-                    code: "TOKEN_NOT_FOUND"
-                },
-                timestamp: new Date().toISOString()
-            });
-            return; 
+            throw new AuthenticationError(
+                "Unauthorized: No token provided",
+                "TOKEN_NOT_FOUND"
+            );
         }
 
         const user = mockTokens[token];
 
+        // invalid token
         if (!user) {
-            res.status(401).json({
+            throw new AuthenticationError(
+                "Unauthorized: Invalid token",
+                "TOKEN_INVALID"
+            );
+        }
+
+        // valide token
+        res.locals.uid = user.uid;
+        res.locals.role = user.role;
+
+        next();
+    } catch (error: unknown) {
+        // AuthenticationError
+        if (error instanceof AuthenticationError) {
+            res.status(HTTP_STATUS.UNAUTHORIZED).json({
+                success: false,
+                error: {
+                    message: error.message,
+                    code: error.code
+                },
+                timestamp: new Date().toISOString()
+            });
+        } else if (error instanceof Error) {
+            // other error
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                error: {
+                    message: `Unauthorized: ${getErrorMessage(error)}`,
+                    code: getErrorCode(error)
+                },
+                timestamp: new Date().toISOString()
+            });
+        } else {
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 error: {
                     message: "Unauthorized: Invalid token",
@@ -70,30 +99,6 @@ const authenticate = async (
                 },
                 timestamp: new Date().toISOString()
             });
-            return;
-        }
-
-        res.locals.uid = user.uid;
-        res.locals.role = user.role;
-        next();
-    } catch (error: unknown) {
-        if (error instanceof AuthenticationError) {
-            // Re-throw authentication errors to be handled by error middleware
-            next(error);
-        } else if (error instanceof Error) {
-            next(
-                new AuthenticationError(
-                    `Unauthorized: ${getErrorMessage(error)}`,
-                    getErrorCode(error)
-                )
-            );
-        } else {
-            next(
-                new AuthenticationError(
-                    "Unauthorized: Invalid token",
-                    "TOKEN_INVALID"
-                )
-            );
         }
     }
 };

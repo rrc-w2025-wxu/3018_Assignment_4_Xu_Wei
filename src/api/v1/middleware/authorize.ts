@@ -1,59 +1,45 @@
-// External library imports
 import { Request, Response, NextFunction } from "express";
-
-// Internal module imports
+import { AuthorizationError } from "../errors/Errors";
 import { AuthorizationOptions } from "../models/authorizationOptions";
 import { MiddlewareFunction } from "../types/expressTypes";
-import { AuthorizationError } from "../errors/Errors";
+import { HTTP_STATUS } from "../../../constants/httpConstants";
 
-/**
- * Middleware to check if a user is authorized based on their role or UID.
- * Now integrated with centralized error handling system.
- *
- * This middleware:
- * - Checks if the user has required roles
- * - Optionally allows users to access their own resources
- * - Throws standardized AuthorizationError for access denied scenarios
- *
- * @param {AuthorizationOptions} opts - The authorization options.
- * @returns {MiddlewareFunction} The middleware function.
- */
 const isAuthorized = (opts: AuthorizationOptions): MiddlewareFunction => {
     return (req: Request, res: Response, next: NextFunction) => {
         try {
             const { role, uid } = res.locals;
             const { id } = req.params;
 
-            // Allow if the same user is accessing their own data
+            // allow to access one's own data
             if (opts.allowSameUser && id && uid === id) {
                 return next();
             }
 
-            // If no role exists on the user, throw Forbidden response
             if (!role) {
-                throw new AuthorizationError(
-                    "Forbidden: No role found",
-                    "ROLE_NOT_FOUND"
-                );
+                throw new AuthorizationError("Forbidden: No role found", "ROLE_NOT_FOUND");
             }
 
-            // Check if the user's role matches one of the allowed roles
             if (opts.hasRole && opts.hasRole.includes(role)) {
                 return next();
             }
 
-            // If the role is not authorized, throw Forbidden response
-            return res.status(403).json({
+            // role not match
+            throw new AuthorizationError("Forbidden: Insufficient role", "INSUFFICIENT_ROLE");
+        } catch (error: unknown) {
+            // return JSON
+            if (error instanceof AuthorizationError) {
+                res.status(HTTP_STATUS.FORBIDDEN).json({
                     success: false,
-                    error: {
-                        message: "Forbidden: Insufficient role",
-                        code: "INSUFFICIENT_ROLE"
-                    },
+                    error: { message: error.message, code: error.code },
                     timestamp: new Date().toISOString()
-            });
-        } catch (error) {
-            // Pass errors to the centralized error handler
-            next(error);
+                });
+            } else {
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+                    success: false,
+                    error: { message: error instanceof Error ? error.message : "Unknown error", code: "INTERNAL_ERROR" },
+                    timestamp: new Date().toISOString()
+                });
+            }
         }
     };
 };
