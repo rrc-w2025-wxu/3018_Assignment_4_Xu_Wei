@@ -46,7 +46,7 @@ const authenticate = async (
             ? authHeader.split(" ")[1]
             : undefined;
 
-        // invalid token
+        // token not exists
         if (!token) {
             throw new AuthenticationError(
                 "Unauthorized: No token provided",
